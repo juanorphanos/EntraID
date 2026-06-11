@@ -20,8 +20,7 @@
 
 .PARAMETER DeduplicationProperty
     Property used to group duplicate devices before keeping the newest record.
-    DeviceId is the safest default. DisplayName is useful when your tenant has repeated
-    device registrations with the same name.
+    DisplayName is the default. Use DeviceId when you want strict deduplication by device identifier.
 
 .PARAMETER ShowGridView
     Opens the final report in Out-GridView when available.
@@ -50,7 +49,7 @@ param(
 
     [Parameter(Mandatory = $false)]
     [ValidateSet('DeviceId', 'DisplayName')]
-    [string]$DeduplicationProperty = 'DeviceId',
+    [string]$DeduplicationProperty = 'DisplayName',
 
     [Parameter(Mandatory = $false)]
     [switch]$ShowGridView
