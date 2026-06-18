@@ -141,7 +141,7 @@ function Get-AllGraphDevices {
     [CmdletBinding()]
     param()
 
-    $uri = 'https://graph.microsoft.com/v1.0/devices?$select=id,displayName,deviceId,trustType,registrationDateTime,approximateLastSignInDateTime&$top=999'
+    $uri = 'https://graph.microsoft.com/v1.0/devices?$select=id,displayName,deviceId,trustType,operatingSystem,registrationDateTime,approximateLastSignInDateTime&$filter=operatingSystem+eq+%27Windows%27&$top=999'
     $devices = @()
 
     while ($uri) {
@@ -182,6 +182,7 @@ $Report = foreach ($Device in $RawDevices) {
         DeviceId             = $Device.DeviceId
         DisplayName          = $Device.DisplayName
         TrustType            = $Device.TrustType
+        OperatingSystem      = $Device.operatingSystem
         Status               = Get-EntraDeviceStatus -TrustType $Device.TrustType
         RegistrationDateTime = $Device.RegistrationDateTime
         LastSignInDateTime   = $Device.approximateLastSignInDateTime
@@ -215,7 +216,7 @@ if ($DuplicateCount -gt 0) {
 }
 
 $FinalReport = $DedupedReport |
-Select-Object DisplayName, DeviceId, Id, Status, HasDuplicates, DuplicateCount, TrustType, RegistrationDateTime, LastSignInDateTime
+Select-Object DisplayName, DeviceId, Id, Status, HasDuplicates, DuplicateCount, TrustType, OperatingSystem, RegistrationDateTime, LastSignInDateTime
 
 if ($ShowGridView) {
     try {
@@ -227,7 +228,7 @@ if ($ShowGridView) {
 }
 else {
     $FinalReport |
-    Format-Table -Property DisplayName, DeviceId, Status, HasDuplicates, DuplicateCount, TrustType, RegistrationDateTime, LastSignInDateTime -AutoSize |
+    Format-Table -Property DisplayName, DeviceId, Status, HasDuplicates, DuplicateCount, TrustType, OperatingSystem, RegistrationDateTime, LastSignInDateTime -AutoSize |
     Out-String -Width 300 |
     Write-Output
 }
